@@ -44,7 +44,11 @@ class App {
       set('debug', true);
     }
 
-    connect(MONGO_URI, () => {
+    connect(MONGO_URI, err => {
+      if (err) {
+        console.error(err);
+        process.exit(1);
+      }
       console.log('Connected to DB');
     });
   }
