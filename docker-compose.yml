@@ -21,6 +21,8 @@ services:
       target: development-build-stage
       dockerfile: Dockerfile
     container_name: user-service
+    environment:
+      - MONGO_URI=mongodb://db:27017/user-ms-db
     ports:
       - "3000:3000"
     volumes:
