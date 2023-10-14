@@ -1,5 +1,5 @@
 import { SECRET_KEY } from '@/config';
-import { CreateOrUpdateUserDto } from '@dtos/users.dto';
+import { CreateOrUpdateUserDto } from '@/dtos/user.dtos';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken, TokenData, User } from '@interfaces/users.interface';
 import userModel from '@models/users.model';
