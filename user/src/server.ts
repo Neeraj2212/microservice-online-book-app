@@ -1,5 +1,5 @@
 import App from '@/app';
-import UsersRoute from '@routes/users.route';
+import UsersRoute from '@routes/user.routes';
 import validateEnv from '@utils/validateEnv';
 
 validateEnv();

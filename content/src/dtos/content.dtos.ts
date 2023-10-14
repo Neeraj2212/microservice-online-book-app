@@ -10,3 +10,11 @@ export class CreateContentDto {
   @IsDataURI()
   public datePublished: string;
 }
+
+export class updateContentDto {
+  @IsString()
+  public title?: string;
+
+  @IsString()
+  public story?: string;
+}

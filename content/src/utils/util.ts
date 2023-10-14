@@ -1,3 +1,8 @@
+import { USER_SERVICE_URL } from '@/config';
+import { HttpException } from '@/exceptions/HttpException';
+import axios from 'axios';
+import { NextFunction } from 'express';
+
 /**
  * @method isEmpty
  * @param {String | Number | Object} value
@@ -16,4 +21,20 @@ export const isEmpty = (value: string | number | object): boolean => {
   } else {
     return false;
   }
+};
+
+/**
+ * @method checkUserExists
+ * @param {String} userId
+ * @returns {Boolean} true & false
+ * @description Check if user exists
+ */
+export const checkUserExists = async (userId: string, next: NextFunction) => {
+  const response = await axios.get(`${USER_SERVICE_URL}/${userId}`);
+
+  if (response.status !== 200) {
+    next(new HttpException(404, "User doesn't exist"));
+  }
+
+  return response.data.data ? true : false;
 };

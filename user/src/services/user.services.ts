@@ -1,5 +1,5 @@
 import { SECRET_KEY } from '@/config';
-import { CreateOrUpdateUserDto } from '@/dtos/user.dtos';
+import { CreateUserDto, UpdateUserDto } from '@/dtos/user.dtos';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken, TokenData, User } from '@interfaces/users.interface';
 import userModel from '@models/users.model';
@@ -23,7 +23,7 @@ class UserService {
     return findUser;
   }
 
-  public async createUser(userData: CreateOrUpdateUserDto): Promise<User> {
+  public async createUser(userData: CreateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
 
     const findUser: User = await this.users.findOne({ $or: [{ email: userData.email }, { phone: userData.phone }] });
@@ -36,18 +36,17 @@ class UserService {
     return createUserData;
   }
 
-  public async updateUser(userId: string, userData: CreateOrUpdateUserDto): Promise<User> {
+  public async updateUser(userId: string, userData: UpdateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
 
-    if (userData.email) {
+    if (userData.email || userData.phone) {
       const findUser: User = await this.users.findOne({ $or: [{ email: userData.email }, { phone: userData.phone }] });
       if (findUser && findUser._id != userId) {
         if (findUser.email === userData.email) throw new HttpException(409, `This email ${userData.email} already exists`);
         if (findUser.phone === userData.phone) throw new HttpException(409, `This phone ${userData.phone} already exists`);
       }
     }
-
-    const updateUserById: User = await this.users.findByIdAndUpdate(userId, { userData });
+    const updateUserById: User = await this.users.findByIdAndUpdate(userId, { $set: userData }, { returnOriginal: false });
     if (!updateUserById) throw new HttpException(404, "User doesn't exist");
 
     return updateUserById;

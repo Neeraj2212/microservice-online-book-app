@@ -5,6 +5,7 @@ const contentSchema: Schema = new Schema({
   title: {
     type: String,
     required: true,
+    unique: true,
   },
   story: {
     type: String,

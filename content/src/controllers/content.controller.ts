@@ -1,15 +1,18 @@
 import { CreateContentDto } from '@/dtos/content.dtos';
+import { RequestWithUserId } from '@/interfaces/auth.interface';
 import { Content } from '@/interfaces/content.interface';
 import { ContentService } from '@/services/content.services';
 import { NextFunction, Request, Response } from 'express';
+import csv from 'csvtojson/v2';
 
 export class ContentController {
   public contentService = new ContentService();
 
-  public createContent = async (req: Request, res: Response, next: NextFunction) => {
+  public createContent = async (req: RequestWithUserId, res: Response, next: NextFunction) => {
     try {
       const contentData: CreateContentDto = req.body;
-      const createContentData: Content = await this.contentService.createContent(contentData);
+      const userId: string = req.userId;
+      const createContentData: Content = await this.contentService.createContent(userId, contentData);
 
       res.status(201).json({ data: createContentData, message: 'created' });
     } catch (error) {
@@ -28,11 +31,12 @@ export class ContentController {
     }
   };
 
-  public updateContent = async (req: Request, res: Response, next: NextFunction) => {
+  public updateContent = async (req: RequestWithUserId, res: Response, next: NextFunction) => {
     try {
       const contentId: string = req.params.id;
+      const userId: string = req.userId;
       const contentData: CreateContentDto = req.body;
-      const updateContentData: Content = await this.contentService.updateContent(contentId, contentData);
+      const updateContentData: Content = await this.contentService.updateContent(contentId, userId, contentData);
 
       res.status(200).json({ data: updateContentData, message: 'updated' });
     } catch (error) {
@@ -40,10 +44,11 @@ export class ContentController {
     }
   };
 
-  public deleteContent = async (req: Request, res: Response, next: NextFunction) => {
+  public deleteContent = async (req: RequestWithUserId, res: Response, next: NextFunction) => {
     try {
       const contentId: string = req.params.id;
-      const deleteContentData: Content = await this.contentService.deleteContent(contentId);
+      const userId: string = req.userId;
+      const deleteContentData: Content = await this.contentService.deleteContent(contentId, userId);
 
       res.status(200).json({ data: deleteContentData, message: 'deleted' });
     } catch (error) {
@@ -71,11 +76,19 @@ export class ContentController {
     }
   };
 
-  public uploadContentFromCsv = async (req: Request, res: Response, next: NextFunction) => {
+  public uploadContentFromCsv = async (req: RequestWithUserId, res: Response, next: NextFunction) => {
     try {
-      const uploadContentData: Content[] = await this.contentService.uploadContentFromCsv();
+      const userId: string = req.userId;
 
-      res.status(200).json({ data: uploadContentData, message: 'upload' });
+      const jsonContentArray: Content[] = await csv().fromString(req.file.buffer.toString());
+
+      jsonContentArray.forEach(content => {
+        content.userId = userId;
+      });
+
+      const uploadedContent: Content[] = await this.contentService.uploadContentFromCsv(userId, jsonContentArray);
+
+      res.status(200).json({ data: uploadedContent, message: 'upload' });
     } catch (error) {
       next(error);
     }
