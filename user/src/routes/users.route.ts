@@ -13,7 +13,7 @@ class UsersRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get('/', this.usersController.getUsers);
+    this.router.get('/all', this.usersController.getUsers);
     this.router.post('/', validationMiddleware(CreateOrUpdateUserDto, 'body'), this.usersController.createUser);
 
     this.router.get('/:id', this.usersController.getUserById);
