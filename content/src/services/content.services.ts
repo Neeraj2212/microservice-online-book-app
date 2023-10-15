@@ -1,4 +1,4 @@
-import { CreateContentDto, updateContentDto } from '@/dtos/content.dtos';
+import { CreateContentDto, UpdateContentDto } from '@/dtos/content.dtos';
 import { HttpException } from '@/exceptions/HttpException';
 import { Content } from '@/interfaces/content.interface';
 import contentModel from '@/models/content.model';
@@ -27,7 +27,7 @@ export class ContentService {
     return findContent;
   }
 
-  public async updateContent(contentId: string, userId: string, contentData: updateContentDto): Promise<Content> {
+  public async updateContent(contentId: string, userId: string, contentData: UpdateContentDto): Promise<Content> {
     if (isEmpty(contentData)) throw new HttpException(400, 'contentData is empty');
 
     const storedContent: Content = await this.content.findById(contentId);

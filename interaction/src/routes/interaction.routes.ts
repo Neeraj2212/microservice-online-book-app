@@ -13,6 +13,9 @@ export class InteractionRoutes implements Routes {
 
   private initializeRoutes() {
     this.router.post('/', authMiddleware, this.controller.createInteraction);
-    this.router.get('/:contentId', this.controller.getInteractionByContentId);
+    // For internal use by content service
+    this.router.get('/top', this.controller.getTopContents);
+    this.router.get('/content/:contentId', this.controller.getInteractionsOfContent);
+    this.router.get('/:id', this.controller.getInteractionById);
   }
 }

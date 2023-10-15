@@ -3,6 +3,10 @@ export interface Interaction {
   contentId: string;
 }
 
+export interface TopContents {
+  contentIds: string[];
+}
+
 export enum InteractionType {
   LIKE = 'like',
   READ = 'read',

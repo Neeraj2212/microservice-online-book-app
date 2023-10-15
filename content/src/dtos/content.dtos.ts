@@ -1,4 +1,4 @@
-import { IsDataURI, IsString } from 'class-validator';
+import { IsDateString, IsString } from 'class-validator';
 
 export class CreateContentDto {
   @IsString()
@@ -7,11 +7,11 @@ export class CreateContentDto {
   @IsString()
   public story: string;
 
-  @IsDataURI()
+  @IsDateString()
   public datePublished: string;
 }
 
-export class updateContentDto {
+export class UpdateContentDto {
   @IsString()
   public title?: string;
 

@@ -1,6 +1,6 @@
 import { CreateInteractionDto } from '@/dtos/interaction.dtos';
 import { HttpException } from '@/exceptions/HttpException';
-import { Interaction } from '@/interfaces/interaction.interface';
+import { Interaction, TopContents } from '@/interfaces/interaction.interface';
 import interactionModel from '@/models/interaction.model';
 
 import { isEmpty } from 'class-validator';
@@ -21,9 +21,51 @@ export class InteractionService {
     return createInteractionData;
   }
 
-  public async getInterectionsByContentId(contentId: string): Promise<Interaction[]> {
+  public async findInteractionById(interactionId: string): Promise<Interaction> {
+    if (isEmpty(interactionId)) throw new HttpException(400, 'interactionId is empty');
+
+    const findInteractionData: Interaction = await this.interaction.findOne({ _id: interactionId });
+    if (!findInteractionData) throw new HttpException(409, "Interaction doesn't exist");
+
+    return findInteractionData;
+  }
+
+  public async getInteractionsOfContent(contentId: string): Promise<Interaction[]> {
     if (isEmpty(contentId)) throw new HttpException(400, 'contentId is empty');
-    const interactions: Interaction[] = await this.interaction.find({ contentId });
-    return interactions;
+
+    const contentInteractions: Interaction[] = await this.interaction.find({ contentId });
+
+    return contentInteractions;
+  }
+
+  // For internal use by content service
+  public async getTopContentsByInteractionType(interactionType: string): Promise<TopContents[]> {
+    if (isEmpty(interactionType)) throw new HttpException(400, 'interactionType is empty');
+
+    const topContents: TopContents[] = await this.interaction.aggregate(
+      [
+        {
+          $group: {
+            _id: '$contentId',
+            sortField: {
+              $sum: {
+                $cond: [{ $eq: ['$type', interactionType] }, 1, 0],
+              },
+            },
+          },
+        },
+        { $sort: { sortField: -1 } },
+        { $project: { sortField: 0 } },
+        {
+          $group: {
+            _id: null,
+            contentIds: { $push: '$_id' },
+          },
+        },
+      ],
+      { maxTimeMS: 60000, allowDiskUse: true },
+    );
+
+    return topContents;
   }
 }

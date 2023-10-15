@@ -10,6 +10,7 @@ const interactionSchema: Schema = new Schema({
   contentId: {
     type: Schema.Types.ObjectId,
     required: true,
+    index: true,
   },
   userId: {
     type: Schema.Types.ObjectId,
