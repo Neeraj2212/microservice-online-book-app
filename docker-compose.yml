@@ -12,9 +12,11 @@ services:
     links:
       - user-service
       - content-service
+      - interaction-service
     depends_on:
       - user-service
       - content-service
+      - interaction-service
     networks:
       - microservice-network
   user-service:
@@ -51,6 +53,28 @@ services:
       - "3001:3001"
     volumes:
       - ./content:/app
+      - /app/node_modules
+    restart: "unless-stopped"
+    networks:
+      - microservice-network
+    links:
+      - db
+    depends_on:
+      - db
+  interaction-service:
+    build:
+      context: ./interaction/
+      target: development-build-stage
+      dockerfile: Dockerfile
+    container_name: interaction-service
+    environment:
+      - MONGO_URI=mongodb://db:27017/interaction-ms-db
+      - USER_SERVICE_URL=http://user-service:3000
+      - PORT=3002
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./interaction:/app
       - /app/node_modules
     restart: "unless-stopped"
     networks:

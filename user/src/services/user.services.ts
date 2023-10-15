@@ -65,9 +65,8 @@ class UserService {
 
     const dataStoredInToken: DataStoredInToken = { _id: userId };
     const secretKey: string = SECRET_KEY;
-    const expiresIn: number = 60 * 60 * 1000; // an hour
 
-    return { token: sign(dataStoredInToken, secretKey, { expiresIn }) };
+    return { token: sign(dataStoredInToken, secretKey, { expiresIn: '1h' }) };
   }
 }
 
