@@ -4,6 +4,7 @@ import { Interaction, TopContents } from '@/interfaces/interaction.interface';
 import interactionModel from '@/models/interaction.model';
 
 import { isEmpty } from 'class-validator';
+import { isValidObjectId } from 'mongoose';
 
 export class InteractionService {
   public interaction = interactionModel;
@@ -23,6 +24,7 @@ export class InteractionService {
 
   public async findInteractionById(interactionId: string): Promise<Interaction> {
     if (isEmpty(interactionId)) throw new HttpException(400, 'interactionId is empty');
+    if (!isValidObjectId(interactionId)) throw new HttpException(400, 'interactionId is invalid');
 
     const findInteractionData: Interaction = await this.interaction.findOne({ _id: interactionId });
     if (!findInteractionData) throw new HttpException(409, "Interaction doesn't exist");
@@ -32,6 +34,7 @@ export class InteractionService {
 
   public async getInteractionsOfContent(contentId: string): Promise<Interaction[]> {
     if (isEmpty(contentId)) throw new HttpException(400, 'contentId is empty');
+    if (!isValidObjectId(contentId)) throw new HttpException(400, 'contentId is invalid');
 
     const contentInteractions: Interaction[] = await this.interaction.find({ contentId });
 

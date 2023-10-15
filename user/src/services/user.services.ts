@@ -5,6 +5,7 @@ import { DataStoredInToken, TokenData, User } from '@interfaces/users.interface'
 import userModel from '@models/users.model';
 import { isEmpty } from '@utils/util';
 import { sign } from 'jsonwebtoken';
+import { isValidObjectId } from 'mongoose';
 
 class UserService {
   public users = userModel;
@@ -16,6 +17,7 @@ class UserService {
 
   public async findUserById(userId: string): Promise<User> {
     if (isEmpty(userId)) throw new HttpException(400, 'UserId is empty');
+    if (!isValidObjectId(userId)) throw new HttpException(400, 'UserId is invalid');
 
     const findUser: User = await this.users.findOne({ _id: userId });
     if (!findUser) throw new HttpException(404, "User doesn't exist");
@@ -38,6 +40,7 @@ class UserService {
 
   public async updateUser(userId: string, userData: UpdateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
+    if (!isValidObjectId(userId)) throw new HttpException(400, 'UserId is invalid');
 
     if (userData.email || userData.phone) {
       const findUser: User = await this.users.findOne({ $or: [{ email: userData.email }, { phone: userData.phone }] });
@@ -53,6 +56,9 @@ class UserService {
   }
 
   public async deleteUser(userId: string): Promise<User> {
+    if (isEmpty(userId)) throw new HttpException(400, 'UserId is empty');
+    if (!isValidObjectId(userId)) throw new HttpException(400, 'UserId is invalid');
+
     const deleteUserById: User = await this.users.findByIdAndDelete(userId);
     if (!deleteUserById) throw new HttpException(404, "User doesn't exist");
 
@@ -60,6 +66,8 @@ class UserService {
   }
 
   public async createToken(userId: string): Promise<TokenData> {
+    if (isEmpty(userId)) throw new HttpException(400, 'UserId is empty');
+    if (!isValidObjectId(userId)) throw new HttpException(400, 'UserId is invalid');
     const findUser: User = await this.users.findOne({ _id: userId });
     if (!findUser) throw new HttpException(404, "User doesn't exist");
 

@@ -5,6 +5,7 @@ import { Content, InteractionType } from '@/interfaces/content.interface';
 import contentModel from '@/models/content.model';
 import axios from 'axios';
 import { isEmpty } from 'class-validator';
+import { isValidObjectId } from 'mongoose';
 
 export class ContentService {
   public content = contentModel;
@@ -22,6 +23,7 @@ export class ContentService {
 
   public async getContentById(contentId: string): Promise<Content> {
     if (isEmpty(contentId)) throw new HttpException(400, 'contentId is empty');
+    if (!isValidObjectId(contentId)) throw new HttpException(400, 'contentId is invalid');
 
     const findContent: Content = await this.content.findOne({ _id: contentId });
     if (!findContent) throw new HttpException(404, `Content does not exists`);
@@ -31,6 +33,7 @@ export class ContentService {
 
   public async updateContent(contentId: string, userId: string, contentData: UpdateContentDto): Promise<Content> {
     if (isEmpty(contentData)) throw new HttpException(400, 'contentData is empty');
+    if (isEmpty(contentId)) throw new HttpException(400, 'contentId is empty');
 
     const storedContent: Content = await this.content.findById(contentId);
 
@@ -45,6 +48,7 @@ export class ContentService {
 
   public async deleteContent(contentId: string, userId: string): Promise<Content> {
     if (isEmpty(contentId)) throw new HttpException(400, 'contentId is empty');
+    if (!isValidObjectId(contentId)) throw new HttpException(400, 'contentId is invalid');
 
     const storedContent: Content = await this.content.findById(contentId);
     if (!storedContent) throw new HttpException(404, `Content does not exists`);

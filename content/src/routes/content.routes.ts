@@ -24,7 +24,7 @@ export class ContentRoutes implements Routes {
     this.router.post('/upload', authMiddleware, upload.single('data'), this.controller.uploadContentFromCsv);
 
     this.router.get('/:id', this.controller.getContentById);
-    this.router.put('/:id', authMiddleware, validationMiddleware(UpdateContentDto, 'body'), this.controller.updateContent);
+    this.router.put('/:id', authMiddleware, validationMiddleware(UpdateContentDto, 'body', true), this.controller.updateContent);
     this.router.delete('/:id', authMiddleware, this.controller.deleteContent);
   }
 }
