@@ -36,6 +36,8 @@ export class InteractionController {
       const interactionsOfContent: Interaction[] = await this.interactionService.getInteractionsOfContent(contentId);
 
       res.status(200).json({
+        reads: interactionsOfContent.filter(interaction => interaction.type === InteractionType.READ).length,
+        likes: interactionsOfContent.filter(interaction => interaction.type === InteractionType.LIKE).length,
         data: interactionsOfContent,
         message: 'findInteractions',
       });

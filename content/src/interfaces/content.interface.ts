@@ -4,3 +4,8 @@ export interface Content {
   datePublished: Date;
   userId: string;
 }
+
+export enum InteractionType {
+  LIKE = 'like',
+  READ = 'read',
+}

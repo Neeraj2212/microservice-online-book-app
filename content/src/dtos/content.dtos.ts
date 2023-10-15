@@ -1,4 +1,5 @@
-import { IsDateString, IsString } from 'class-validator';
+import { InteractionType } from '@/interfaces/content.interface';
+import { IsDateString, IsEnum, IsString } from 'class-validator';
 
 export class CreateContentDto {
   @IsString()
@@ -17,4 +18,9 @@ export class UpdateContentDto {
 
   @IsString()
   public story?: string;
+}
+
+export class TopContentQueryParams {
+  @IsEnum(InteractionType, { message: 'sortBy must be one of read or like' })
+  public sortBy?: string;
 }

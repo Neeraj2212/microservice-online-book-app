@@ -1,5 +1,5 @@
 import { ContentController } from '@/controllers/content.controller';
-import { CreateContentDto, UpdateContentDto } from '@/dtos/content.dtos';
+import { CreateContentDto, TopContentQueryParams, UpdateContentDto } from '@/dtos/content.dtos';
 import authMiddleware from '@/middlewares/auth.middleware';
 import validationMiddleware from '@/middlewares/validation.middleware';
 import { Routes } from '@interfaces/routes.interface';
@@ -20,7 +20,7 @@ export class ContentRoutes implements Routes {
     this.router.post('/', authMiddleware, validationMiddleware(CreateContentDto, 'body'), this.controller.createContent);
 
     this.router.get('/new', this.controller.getNewContent);
-    this.router.get('/top', this.controller.getTopContent);
+    this.router.get('/top', validationMiddleware(TopContentQueryParams, 'query', true), this.controller.getTopContent);
     this.router.post('/upload', authMiddleware, upload.single('data'), this.controller.uploadContentFromCsv);
 
     this.router.get('/:id', this.controller.getContentById);

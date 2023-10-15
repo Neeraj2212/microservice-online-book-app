@@ -1,6 +1,6 @@
 import { CreateContentDto } from '@/dtos/content.dtos';
 import { RequestWithUserId } from '@/interfaces/auth.interface';
-import { Content } from '@/interfaces/content.interface';
+import { Content, InteractionType } from '@/interfaces/content.interface';
 import { ContentService } from '@/services/content.services';
 import { NextFunction, Request, Response } from 'express';
 import csv from 'csvtojson/v2';
@@ -68,7 +68,8 @@ export class ContentController {
 
   public getTopContent = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const findTopContentData: Content[] = await this.contentService.getTopContent();
+      const sortBy: InteractionType = (req.query?.sortBy?.toString() as InteractionType) || InteractionType.READ;
+      const findTopContentData: Content[] = await this.contentService.getTopContent(sortBy);
 
       res.status(200).json({ data: findTopContentData, message: 'findTop' });
     } catch (error) {

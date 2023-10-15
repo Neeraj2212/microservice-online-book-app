@@ -1,7 +1,9 @@
+import { INTERACTION_SERVICE_URL } from '@/config';
 import { CreateContentDto, UpdateContentDto } from '@/dtos/content.dtos';
 import { HttpException } from '@/exceptions/HttpException';
-import { Content } from '@/interfaces/content.interface';
+import { Content, InteractionType } from '@/interfaces/content.interface';
 import contentModel from '@/models/content.model';
+import axios from 'axios';
 import { isEmpty } from 'class-validator';
 
 export class ContentService {
@@ -59,9 +61,24 @@ export class ContentService {
     return newContent;
   }
 
-  // TODO: GET CONTENT STATS FROM INTERACTIONS AND SEND UPDATED CONTENT
-  public async getTopContent(): Promise<Content[]> {
-    return null;
+  public async getTopContent(sortBy: InteractionType): Promise<Content[]> {
+    const topContents: Content[] = [];
+
+    // Get top interacted contents from interection service
+    const topContentIds: { contentIds: string[] } = await axios
+      .get(`${INTERACTION_SERVICE_URL}/top`, { params: { type: sortBy } })
+      .then(res => res.data.data);
+
+    // Get top contents from the db
+    for (const contentId of topContentIds.contentIds) {
+      const content: Content = await this.content.findById(contentId);
+      topContents.push(content);
+    }
+
+    // Get Other contents from the db
+    const otherContents: Content[] = await this.content.find({ _id: { $nin: topContentIds.contentIds } }).sort({ datePublished: -1 });
+
+    return [...topContents, ...otherContents];
   }
 
   public async uploadContentFromCsv(userId: string, content: Content[]): Promise<Content[]> {
