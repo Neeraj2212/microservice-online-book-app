@@ -1,16 +1,18 @@
 # High-Level Design Document: Online Content Microservice Project
 
 ## Table of Contents
-1. Introduction
-2. Architecture Overview
-3. Microservices
-   1. Content Service
-   2. User Interaction Service
-   3. User Service
-4. Technologies and Tools
-5. Database Design
-6. API Design
-7. Dockerization
+- [High-Level Design Document: Online Content Microservice Project](#high-level-design-document-online-content-microservice-project)
+  - [Table of Contents](#table-of-contents)
+  - [1. Introduction](#1-introduction)
+  - [2. Architecture Overview](#2-architecture-overview)
+  - [3. Microservices](#3-microservices)
+    - [a. Content Service](#a-content-service)
+    - [b. User Interaction Service](#b-user-interaction-service)
+    - [c. User Service](#c-user-service)
+  - [4. Technologies and Tools](#4-technologies-and-tools)
+  - [5. Database Design](#5-database-design)
+  - [6. API Design](#6-api-design)
+  - [7. Dockerization](#7-dockerization)
 
 ## 1. Introduction
 The Online Content Microservice Project aims to build three microservices to manage content, user interactions, and user data. The project follows the microservices architecture and uses Docker for containerization. Each microservice has its own dedicated database.
@@ -53,7 +55,7 @@ The three microservices are:
 - Provide authentication token to users.
 
 ## 4. Technologies and Tools
-- Language: Node.js (Express.js)
+- Language: Node.js (Express.js), TypeScript
 - Databases: Docker Containerized MongoDB instance with separate databases for each microservice
 - Docker for containerization
 - Swagger for documentation
