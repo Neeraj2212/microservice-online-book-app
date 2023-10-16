@@ -28,7 +28,7 @@ Postman Collection :- [Postman Collection](https://www.postman.com/interstellar-
 
 Swagger Documentation :- [Swagger Documentation](https://app.swaggerhub.com/apis-docs/N78844/microservice-book-app/1.0)
 
-Postman Documentation :- [Postman Documentation](https://documenter.getpostman.com/view/16239037/Tz5qZ9QJ)
+Postman Documentation :- [Postman Documentation](https://documenter.getpostman.com/view/16239037/2s9YR6bEJc)
 
 ## 3. Microservice: User service
 The user service manages user data and offers CRUD operations for user profiles.
